@@ -1,36 +1,60 @@
 # 🐦 Flappy Bird AI using Deep Q-Network (DQN)
 
-An autonomous Flappy Bird agent built using **Deep Reinforcement Learning (DRL)** with **PyTorch** and **Gymnasium**. The agent learns to play the game by interacting with the environment, collecting rewards, and improving its policy through **Deep Q-Learning (DQN)**.
+An autonomous Flappy Bird agent built using **Deep Reinforcement Learning (DRL)** with **PyTorch** and **Gymnasium**. The agent learns to play Flappy Bird through trial and error using rewards and penalties, eventually discovering an optimal strategy to survive longer and achieve higher scores.
 
 ---
 
-## 🚀 Project Overview
+# 🎥 Demo
 
-This project implements a Deep Q-Network (DQN) agent capable of learning how to play Flappy Bird without any hardcoded rules.
-
-The agent starts with random actions and gradually learns optimal gameplay through trial and error using reinforcement learning techniques such as:
-
-- Deep Q-Networks (DQN)
-- Experience Replay
-- Target Networks
-- Epsilon-Greedy Exploration
-- Bellman Equation Optimization
-
-The trained model learns when to flap and when not to flap in order to maximize survival time and achieve higher scores.
+![Flappy Bird Demo](assets/flappy_bird_demo.gif)
 
 ---
 
-## 🎯 Objectives
+# 🎮 Gameplay
 
-- Understand Deep Reinforcement Learning fundamentals.
-- Implement Deep Q-Learning from scratch using PyTorch.
-- Train an autonomous game-playing AI agent.
-- Explore neural network-based decision making.
-- Learn experience replay and target network synchronization techniques.
+![Gameplay](assets/gameplay.png)
 
 ---
 
-## 🧠 Reinforcement Learning Workflow
+# 📈 Training Logs
+
+![Training Logs](assets/training_logs.png)
+
+---
+
+# 🚀 Project Overview
+
+This project implements a **Deep Q-Network (DQN)** from scratch to train an AI agent capable of playing Flappy Bird autonomously.
+
+Instead of hardcoding rules, the agent learns through interaction with the environment:
+
+1. Observe the game state.
+2. Choose an action (Flap / No Flap).
+3. Receive a reward.
+4. Store the experience.
+5. Learn from previous experiences.
+6. Improve future decisions.
+
+Over thousands of episodes, the agent gradually learns how to navigate pipes efficiently and maximize rewards.
+
+---
+
+# ✨ Features
+
+- Deep Q-Network (DQN) implementation using PyTorch
+- Experience Replay Buffer
+- Target Network Synchronization
+- Epsilon-Greedy Exploration Strategy
+- Automatic Model Checkpoint Saving
+- Training & Evaluation Modes
+- Configurable Hyperparameters via YAML
+- GPU Support (CUDA/MPS)
+- Gymnasium-based Environment
+- Reinforcement Learning from Scratch
+
+---
+
+# 🧠 Reinforcement Learning Workflow
 
 ```text
 Environment State
@@ -54,71 +78,90 @@ Environment State
 
 ---
 
-## 🛠 Technologies Used
-
-| Technology | Purpose |
-|------------|----------|
-| Python | Programming Language |
-| PyTorch | Deep Learning Framework |
-| Gymnasium | Reinforcement Learning Environment |
-| Flappy Bird Gymnasium | Flappy Bird Environment |
-| NumPy | Numerical Computations |
-| PyYAML | Configuration Management |
-
----
-
-## 📂 Project Structure
+# 🏗️ Project Architecture
 
 ```text
 FLAPPY_BIRD_RL/
 │
-├── agent.py                # Training and testing pipeline
-├── dqn.py                  # Deep Q-Network architecture
-├── experience_replay.py    # Replay Memory implementation
-├── parameters.yaml         # Hyperparameter configuration
-├── game_flappy_bird.py     # Manual gameplay version
+├── agent.py
+├── dqn.py
+├── experience_replay.py
+├── parameters.yaml
+├── game_flappy_bird.py
+│
+├── assets/
+│   ├── flappy_bird_demo.gif
+│   ├── gameplay.png
+│   └── training_logs.png
 │
 ├── runs/
-│   ├── flappybirdv0.pt     # Trained model
-│   └── flappybirdv0.log    # Training logs
+│   ├── flappybirdv0.pt
+│   └── flappybirdv0.log
 │
 └── README.md
 ```
 
 ---
 
-## 🏗 DQN Architecture
+# 🛠️ Tech Stack
 
-The Deep Q-Network approximates the Q-function:
-
-```math
-Q(State, Action)
-```
-
-Current architecture:
-
-```python
-Linear(State_Dim, 256)
-ReLU
-Linear(256, Action_Dim)
-```
-
-Input:
-- Bird position
-- Bird velocity
-- Pipe information
-
-Output:
-- Q-value for No Flap
-- Q-value for Flap
-
-The action with the highest Q-value is selected.
+| Technology | Purpose |
+|------------|----------|
+| Python | Programming Language |
+| PyTorch | Deep Learning Framework |
+| Gymnasium | Reinforcement Learning Environment |
+| Flappy Bird Gymnasium | Game Environment |
+| PyYAML | Hyperparameter Management |
+| NumPy | Numerical Operations |
+| Pygame | Game Rendering |
 
 ---
 
-## 🔄 Experience Replay
+# 🧩 Deep Q-Network (DQN)
 
-The agent stores experiences in a replay buffer:
+The DQN acts as the agent's brain.
+
+Input:
+
+```text
+Game State
+```
+
+Output:
+
+```text
+Q(No Flap)
+Q(Flap)
+```
+
+The network predicts the expected future reward of each action.
+
+Example:
+
+```text
+Q(No Flap) = 1.2
+Q(Flap)    = 3.8
+```
+
+The agent chooses:
+
+```text
+Flap
+```
+
+because:
+
+```text
+3.8 > 1.2
+```
+
+---
+
+# 🔄 Experience Replay
+
+Instead of learning from only the latest move, experiences are stored in memory.
+
+Each experience contains:
 
 ```text
 (State,
@@ -141,31 +184,38 @@ Example:
 ```
 
 Benefits:
-- Breaks correlation between experiences
+
+- Breaks data correlation
 - Improves training stability
-- Increases sample efficiency
+- Increases learning efficiency
 
 ---
 
-## 🎯 Target Network
+# 🎯 Target Network
 
-A separate target network is maintained to stabilize learning.
+The project uses two networks:
+
+### Policy Network
+
+Used for selecting actions.
 
 ```text
-Policy Network
-      ↓
- Learn Continuously
-
-Target Network
-      ↓
- Periodically Updated
+Current Learning Network
 ```
 
-This reduces oscillations and divergence during training.
+### Target Network
+
+Used for generating stable learning targets.
+
+```text
+Periodically Updated Copy
+```
+
+This significantly improves DQN stability.
 
 ---
 
-## 🔍 Epsilon-Greedy Exploration
+# 🎲 Epsilon-Greedy Exploration
 
 The agent balances:
 
@@ -174,34 +224,49 @@ The agent balances:
 Random actions:
 
 ```text
-Choose random move
+Choose Random Action
 ```
 
 ### Exploitation
 
-Best learned action:
+Learned actions:
 
 ```text
-Choose action with highest Q-value
+Choose Best Action
 ```
 
-Epsilon decays over time:
+Training starts with:
 
 ```yaml
 epsilon_init: 1.0
+```
+
+Meaning:
+
+```text
+100% Random Exploration
+```
+
+Gradually decays to:
+
+```yaml
 epsilon_min: 0.05
-epsilon_decay: 0.9995
+```
+
+Meaning:
+
+```text
+Mostly Learned Decisions
 ```
 
 ---
 
-## 📈 Bellman Equation
+# 📚 Bellman Equation
 
-The agent learns using:
+The agent learns using the Bellman Equation:
 
 ```math
-Q(s,a) =
-R + \gamma \max Q(s',a')
+Q(s,a)=R+\gamma \max Q(s',a')
 ```
 
 Where:
@@ -210,59 +275,63 @@ Where:
 - γ = Discount factor
 - Q(s',a') = Future reward estimate
 
+This allows the agent to consider future consequences of actions.
+
 ---
 
-## ⚙ Hyperparameters
+# ⚙️ Hyperparameters
 
 ```yaml
-epsilon_init: 1.0
-epsilon_min: 0.05
-epsilon_decay: 0.9995
+flappybirdv0:
+  env_id: FlappyBird-v0
 
-replay_memory_size: 100000
-mini_batch_size: 32
+  epsilon_init: 1
+  epsilon_min: 0.05
+  epsilon_decay: 0.9995
 
-network_sync_rate: 10
+  replay_memory_size: 100000
+  mini_batch_size: 32
 
-alpha: 0.001
-gamma: 0.99
+  network_sync_rate: 10
 
-reward_threshold: 1000
+  alpha: 0.001
+  gamma: 0.99
+
+  reward_threshold: 1000
 ```
 
 ---
 
-## 💻 Installation
+# 💻 Installation
 
-### Clone Repository
+## Clone Repository
 
 ```bash
 git clone https://github.com/yourusername/flappy-bird-dqn.git
-
 cd flappy-bird-dqn
 ```
 
-### Create Virtual Environment (Optional)
+---
+
+## Create Virtual Environment (Optional)
+
+### Windows
 
 ```bash
 python -m venv venv
-```
-
-Activate:
-
-Windows:
-
-```bash
 venv\Scripts\activate
 ```
 
-Linux/Mac:
+### Linux / Mac
 
 ```bash
+python -m venv venv
 source venv/bin/activate
 ```
 
-### Install Dependencies
+---
+
+## Install Dependencies
 
 ```bash
 pip install torch
@@ -272,11 +341,17 @@ pip install pygame
 pip install pyyaml
 ```
 
+Or:
+
+```bash
+pip install -r requirements.txt
+```
+
 ---
 
-## 🏋 Training the Agent
+# 🏋️ Training the Agent
 
-Run:
+Start training:
 
 ```bash
 python agent.py flappybirdv0 --train
@@ -284,12 +359,12 @@ python agent.py flappybirdv0 --train
 
 During training:
 
-- Agent explores environment
-- Experiences are stored
-- DQN learns from replay memory
+- Experiences are collected
+- Replay Memory grows
+- DQN learns optimal actions
 - Best model is automatically saved
 
-Model file:
+Saved model:
 
 ```text
 runs/flappybirdv0.pt
@@ -297,7 +372,7 @@ runs/flappybirdv0.pt
 
 ---
 
-## 🎮 Testing the Trained Agent
+# 🎮 Testing the Trained Agent
 
 Run:
 
@@ -305,80 +380,84 @@ Run:
 python agent.py flappybirdv0
 ```
 
-The trained agent will automatically play Flappy Bird.
+The trained AI agent will automatically play Flappy Bird.
 
 ---
 
-## 📊 Training Output
-
-Example:
+# 📊 Sample Training Output
 
 ```text
 episode=1 with total reward=-7.5 & epsilon=1.0
 
-episode=200 with total reward=45.3 & epsilon=0.45
+episode=100 with total reward=18.4 & epsilon=0.78
 
-episode=1000 with total reward=120.5 & epsilon=0.05
+episode=500 with total reward=65.2 & epsilon=0.32
+
+episode=1000 with total reward=130.8 & epsilon=0.05
 ```
 
 As training progresses:
 
-- Reward increases
-- Exploration decreases
-- Agent survives longer
+✅ Higher rewards
+
+✅ Better pipe navigation
+
+✅ Improved survival time
+
+✅ Reduced exploration
 
 ---
 
-## 📸 Results
+# 📈 Results
 
 ### Before Training
 
 - Random actions
 - Frequent collisions
-- Low rewards
+- Very low scores
 
 ### After Training
 
-- Intelligent flapping behavior
-- Improved obstacle avoidance
-- Higher average rewards
-- Longer survival time
+- Strategic flapping
+- Better obstacle avoidance
+- Longer survival
+- Improved average rewards
 
 ---
 
-## 📚 Concepts Learned
+# 🎓 Learning Outcomes
 
-This project demonstrates:
+This project demonstrates practical implementation of:
 
 - Reinforcement Learning
 - Deep Reinforcement Learning
 - Deep Q-Networks (DQN)
+- Bellman Equation
 - Experience Replay
 - Target Networks
-- Bellman Equation
 - Epsilon-Greedy Exploration
 - Neural Network Optimization
 - PyTorch Model Training
-- Game AI Development
+- AI Game Development
 
 ---
 
-## 🔮 Future Improvements
+# 🔮 Future Improvements
 
-Potential enhancements:
+Potential enhancements include:
 
 - Double DQN (DDQN)
 - Dueling DQN
 - Prioritized Experience Replay
 - PPO (Proximal Policy Optimization)
-- TensorBoard Visualization
-- Reward Curve Plotting
-- Model Checkpointing
+- TensorBoard Integration
+- Reward Visualization Dashboard
 - Hyperparameter Optimization
+- Multi-Agent Reinforcement Learning
 
 ---
 
-## 👨‍💻 Author
+# 👨‍💻 Author
 
 **Ankit Yadav**
 
@@ -386,11 +465,13 @@ Data Science Student | Machine Learning Enthusiast | Aspiring AI Engineer
 
 ### Connect With Me
 
-- LinkedIn: https://linkedin.com/in/iankityadav03
-- GitHub: https://github.com/Ankit-zone
+- GitHub: https://github.com/YOUR_USERNAME
+- LinkedIn: https://linkedin.com/in/YOUR_LINKEDIN_PROFILE
 
 ---
 
-## ⭐ If you found this project useful
+# ⭐ Support
 
-Consider giving this repository a star and sharing it with others interested in Reinforcement Learning and Game AI.
+If you found this project interesting, consider giving it a ⭐ on GitHub.
+
+It helps others discover the project and motivates future improvements.
